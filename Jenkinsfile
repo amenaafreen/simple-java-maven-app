@@ -8,7 +8,7 @@ podTemplate(
   		persistentVolumeClaim(mountPath: '/root/.m2/repository', claimName: 'pvc', readOnly: false)
   ]) {
 
-  node(label) {
+  node(POD_LABEL) {
     stage('Build a Maven project') {
       git 'https://github.com/amenaafreen/simple-java-maven-app.git'
       container('maven') {
