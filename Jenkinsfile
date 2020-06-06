@@ -5,14 +5,17 @@ podTemplate(
                 containerTemplate(name: 'maven', image: 'maven:3.6.0-jdk-8-alpine', ttyEnabled: true, command: 'cat')
    ],
          volumes: [
-  		persistentVolumeClaim(mountPath: '/root/.m2/repository', claimName: 'pvc', readOnly: false)
+  		persistentVolumeClaim(mountPath: '/home/jenkins/workspace', claimName: 'pvc', readOnly: false)
   ]) {
 
   node(POD_LABEL) {
     stage('Build a Maven project') {
       git 'https://github.com/amenaafreen/simple-java-maven-app.git'
       container('maven') {
-          sh 'mvn -B clean package'
+          sh '''\
+              export MAVEN_OPTS="-Dmaven.repo.local=/home/jenkins/workspace/.m2/repository" 
+              mvn -B clean package 
+             '''
       }
     }
   }
